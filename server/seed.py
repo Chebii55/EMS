@@ -21,7 +21,7 @@ def seed_employees(n=10):
             date_hired=fake.date_this_decade(),
             employment_status=random.choice(["Full-time", "Part-time", "Contract"]),
             address=fake.address(),
-            _password_hash=fake.password(),
+            _password_hash="password",
             role=random.choice(["admin", "manager", "staff"]),
         )
         db.session.add(employee)
