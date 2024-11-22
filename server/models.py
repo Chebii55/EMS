@@ -37,11 +37,7 @@ class Employee(db.Model, SerializerMixin):
             raise ValueError("Invalid email format.")
         return email
 
-    @validates('date_of_birth')
-    def validate_date_of_birth(self, key, dob):
-        if dob >= datetime.utcnow().date():
-            raise ValueError("Date of birth cannot be in the future.")
-        return dob
+
 
     # Password Hashing
     @hybrid_property

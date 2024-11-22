@@ -27,19 +27,17 @@ const Payroll = () => {
                 console.error(err);
             }
         };
-        console.log(sessionData)
         // Function to fetch payroll data
-        const fetchPayrolls = async () => {
-            try {
-                const response = await fetch(`/payrolls?employee_id=${employeeId}`);
-                const data = await response.json();
-                
-            } catch (err) {
-                setError("Failed to fetch payrolls.");
-                console.error(err);
-            }
-        };
-        console.log(payrolls)
+        const fetchPayrolls = fetch(`/payrolls`)
+            .then(r => r.json())
+            .then(data => {
+                // Filter payrolls based on sessionData.id
+                const filteredPayrolls = data.filter(payroll => payroll.employee_id === sessionData.id);
+                setPayrolls(filteredPayrolls); // Update the state with the filtered data
+            })
+            .catch(error => console.error('Error fetching payrolls:', error));
+
+        
         // Initialize: Validate session and fetch payrolls
         const initialize = async () => {
             setLoading(true);
@@ -109,7 +107,7 @@ const Payroll = () => {
                             </svg>
                         </div>
                         <div className="px-4 py-2 text-gray-700">
-                            <h3 className="text-sm font-semibold">Date: {payroll.date}</h3>
+                            <h3 className="text-sm font-semibold">Date: {payroll.payment_date}</h3>
                             <p className="text-lg font-bold text-green-600">Net Pay: ${payroll.net_pay}</p>
                             <button
                                 onClick={() => navigate(`/payroll/${payroll.payroll_id}`)}  // Navigate to payroll details

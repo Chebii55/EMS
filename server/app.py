@@ -142,6 +142,8 @@ class Employees(Resource):
         return {"message": "User created successfully"}, 201
 
 
+from datetime import datetime
+
 class EmployeeByID(Resource):
     def get(self, employee_id):
         employee = Employee.query.get(employee_id)
@@ -155,9 +157,58 @@ class EmployeeByID(Resource):
         if not employee:
             return {"error": "Employee not found"}, 404
 
+        # Update the fields with the data provided
         for key, value in data.items():
             setattr(employee, key, value)
+        
+        # Set the updated_at field to the current datetime
+        employee.updated_at = datetime.now()
+
         db.session.commit()
+        return {"message": "Employee updated successfully"}, 200
+
+    def put(self, employee_id):
+        data = request.get_json()
+
+        # Check for missing required fields (assuming all fields must be provided)
+        required_fields = ['full_name', 'username', 'email', 'id_number', 'password', 'role']
+        for field in required_fields:
+            if field not in data:
+                return {"error": f"{field} is required"}, 400
+
+        # Fetch the employee by ID
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return {"error": "Employee not found"}, 404
+
+        # Hash the password if it's being updated
+        password = data.get('password')
+        if password:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            data['password'] = hashed_password
+
+        # Update all fields with the data provided
+        for key, value in data.items():
+            if hasattr(employee, key):  # Ensure only valid fields are updated
+                setattr(employee, key, value)
+
+        # Handle date formatting for date_of_birth and date_hired
+        if 'date_of_birth' in data:
+            employee.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+
+        if 'date_hired' in data:
+            employee.date_hired = datetime.strptime(data['date_hired'], '%Y-%m-%d').date()
+
+        # Set the updated_at field to the current datetime
+        employee.updated_at = datetime.now()
+
+        # Ensure created_at is not updated; it should only be set during creation
+        if not employee.created_at:
+            employee.created_at = datetime.now()
+
+        # Commit the changes
+        db.session.commit()
+
         return {"message": "Employee updated successfully"}, 200
 
     def delete(self, employee_id):
@@ -168,6 +219,8 @@ class EmployeeByID(Resource):
         db.session.delete(employee)
         db.session.commit()
         return {"message": "Employee deleted successfully"}, 200
+
+
 
 
 class Leaves(Resource):

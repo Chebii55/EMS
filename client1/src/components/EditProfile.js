@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-const EditProfile = ({ employeeId, onProfileUpdate }) => {
+const EditProfile = () => {
     const [formData, setFormData] = useState({
         full_name: '',
         job_title: '',
@@ -10,6 +11,8 @@ const EditProfile = ({ employeeId, onProfileUpdate }) => {
         phone_number: '',
         address: '',
     });
+
+    const { employeeId } = useParams(); // Get employeeId from URL params
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -45,19 +48,24 @@ const EditProfile = ({ employeeId, onProfileUpdate }) => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Destructure and exclude date-related fields (created_at, updated_at, date_of_birth, date_hired)
+        const { payrolls,leaves,performances,created_at, updated_at, date_of_birth, date_hired, ...dataToSubmit } = formData;
+        console.log(dataToSubmit)
         try {
             const response = await fetch(`/employees/${employeeId}`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(dataToSubmit) // Send filtered data
             });
+
             if (!response.ok) {
                 throw new Error('Failed to update profile');
             }
+
             const updatedEmployee = await response.json();
-            onProfileUpdate(updatedEmployee);  // Call parent component to update the profile
             alert('Profile updated successfully!');
         } catch (err) {
             setError(err.message);
@@ -150,7 +158,7 @@ const EditProfile = ({ employeeId, onProfileUpdate }) => {
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
-                    <button
+                    <button 
                         type="submit"
                         className="bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300"
                     >

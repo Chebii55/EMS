@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPersonalInfo = () => {
+    const navigate = useNavigate();
     const [sessionData, setSessionData] = useState(null);
     const [employeeData, setEmployeeData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -52,9 +53,9 @@ const DashboardPersonalInfo = () => {
                             alt="Profile Picture"
                             className="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring ring-gray-300"
                         />
-                        <Link to="/edit-profile" className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
+                        <button onClick={() => navigate(`/edit-profile/${employeeData.employee_id}`)}  className="mt-4 bg-indigo-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors duration-300 ring ring-gray-300 hover:ring-indigo-300">
                             Edit Profile
-                        </Link>
+                        </button>
                     </div>
                     <div className="md:w-2/3 md:pl-8">
                         <h1 className="text-2xl font-bold text-indigo-800 mb-2">{employeeData.full_name}</h1>
