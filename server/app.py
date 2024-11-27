@@ -7,7 +7,7 @@ from models import Employee, Leave, Payroll, Performance
 from sqlalchemy import func
 from datetime import datetime
 
-CORS(app)
+# CORS(app)
 api = Api(app)
 app.config['JWT_SECRET_KEY'] = 'ugdfhug765784iurhgwe87ry3r$%'
 
