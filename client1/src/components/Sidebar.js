@@ -39,7 +39,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       } ease-in-out duration-300`}
     >
       <div className="p-4">
-        <h1 className="text-2xl font-semibold text-center text-indigo-500">Company Name</h1>
+        <h1 className="text-2xl font-semibold text-center text-indigo-500">EMS</h1>
 
         <ul className="mt-4 space-y-2">
           <li>
